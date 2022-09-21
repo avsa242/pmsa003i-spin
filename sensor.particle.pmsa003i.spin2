@@ -27,7 +27,6 @@ OBJ
 
     i2c : "com.i2c"                             ' I2C engine
     core: "core.con.pmsa003i"                   ' HW-specific constants
-    time: "time"                                ' timekeeping methods
 
 PUB null()
 ' This is not a top-level object
