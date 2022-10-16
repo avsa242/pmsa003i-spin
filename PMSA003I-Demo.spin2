@@ -5,7 +5,7 @@
     Description: Demo of the PMSA003I driver (P2 version)
     Copyright (c) 2022
     Started Aug 29, 2022
-    Updated Aug 29, 2022
+    Updated Oct 16, 2022
     See end of file for terms of use.
     --------------------------------------------
 }
@@ -27,7 +27,7 @@ CON
 
 OBJ
 
-    cfg:  "core.con.boardcfg.p2eval"
+    cfg:  "boardcfg.p2eval"
     ser:  "com.serial.terminal.ansi"
     iaq:  "sensor.particle.pmsa003i"
 
