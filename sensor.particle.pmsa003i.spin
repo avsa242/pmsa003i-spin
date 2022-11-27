@@ -6,7 +6,7 @@
         particle concentration sensor
     Copyright (c) 2022
     Started Aug 28, 2022
-    Updated Aug 29, 2022
+    Updated Nov 27, 2022
     See end of file for terms of use.
     --------------------------------------------
 }
@@ -45,11 +45,10 @@ PUB start{}: status
 
 PUB startx(SCL_PIN, SDA_PIN, I2C_HZ): status | ack
 ' Start using custom IO pins and I2C bus frequency
-    if lookdown(SCL_PIN: 0..31) and lookdown(SDA_PIN: 0..31) and {
-}   I2C_HZ =< core#I2C_MAX_FREQ                 ' validate pins and bus freq
+    if (lookdown(SCL_PIN: 0..31) and lookdown(SDA_PIN: 0..31) and I2C_HZ =< core#I2C_MAX_FREQ)
         if (status := i2c.init(SCL_PIN, SDA_PIN, I2C_HZ))
             time.usleep(core#T_POR)             ' wait for device startup
-            if present{}                        ' test device bus presence
+            if (present{})                      ' test device bus presence
                 return
     ' if this point is reached, something above failed
     ' Re-check I/O pin assignments, bus speed, connections, power
@@ -86,20 +85,24 @@ PUB measure{}: status | sum, reg_nr
             sum += _reg[reg_nr]                 ' perform checksum
     i2c.stop{}
 
+    { compare calculated checksum to that received by the sensor }
     ifnot (sum == (_reg[core#CKSUM_MSB] << 8 | _reg[core#CKSUM_LSB]))
         status := -1                            ' checksum verification failed
         bytefill(@_reg, 0, 32)                  ' zero out data
 
 PUB pm1_0{}: p
-' Particulate matter concentration (1.0um and smaller), in micro-grams per cubic meter
+' Particulate matter concentration (1.0um and smaller)
+'   Returns: micro-grams per cubic meter
     return (_reg[core#PM1_0_STD_MSB << 8]) | _reg[core#PM1_0_STD_LSB]
 
 PUB pm2_5{}: p
-' Particulate matter concentration (2.5um and smaller), in micro-grams per cubic meter
+' Particulate matter concentration (2.5um and smaller)
+'   Returns: micro-grams per cubic meter
     return (_reg[core#PM2_5_STD_MSB << 8]) | _reg[core#PM2_5_STD_LSB]
 
 PUB pm10{}: p
-' Particulate matter concentration (10um and smaller), in micro-grams per cubic meter
+' Particulate matter concentration (10um and smaller)
+'   Returns: micro-grams per cubic meter
     return (_reg[core#PM10_STD_MSB << 8]) | _reg[core#PM10_STD_LSB]
 
 PUB version{}: ver
