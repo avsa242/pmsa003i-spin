@@ -6,7 +6,7 @@
         particle concentration sensor
     Copyright (c) 2022
     Started Aug 28, 2022
-    Updated Nov 27, 2022
+    Updated Dec 29, 2022
     See end of file for terms of use.
     --------------------------------------------
 }
@@ -93,17 +93,17 @@ PUB measure{}: status | sum, reg_nr
 PUB pm1_0{}: p
 ' Particulate matter concentration (1.0um and smaller)
 '   Returns: micro-grams per cubic meter
-    return (_reg[core#PM1_0_STD_MSB << 8]) | _reg[core#PM1_0_STD_LSB]
+    return (_reg[core#PM1_0_STD_MSB] << 8) | _reg[core#PM1_0_STD_LSB]
 
 PUB pm2_5{}: p
 ' Particulate matter concentration (2.5um and smaller)
 '   Returns: micro-grams per cubic meter
-    return (_reg[core#PM2_5_STD_MSB << 8]) | _reg[core#PM2_5_STD_LSB]
+    return (_reg[core#PM2_5_STD_MSB] << 8) | _reg[core#PM2_5_STD_LSB]
 
 PUB pm10{}: p
 ' Particulate matter concentration (10um and smaller)
 '   Returns: micro-grams per cubic meter
-    return (_reg[core#PM10_STD_MSB << 8]) | _reg[core#PM10_STD_LSB]
+    return (_reg[core#PM10_STD_MSB] << 8) | _reg[core#PM10_STD_LSB]
 
 PUB version{}: ver
 ' Sensor version
