@@ -3,9 +3,9 @@
     Filename: PMSA003I-Demo.spin
     Author: Jesse Burt
     Description: Demo of the PMSA003I driver
-    Copyright (c) 2022
+    Copyright (c) 2023
     Started Aug 29, 2022
-    Updated Aug 29, 2022
+    Updated Jul 15, 2023
     See end of file for terms of use.
     --------------------------------------------
 }
@@ -17,20 +17,14 @@ CON
 
 ' -- User-defined constants
     SER_BAUD    = 115_200
-    LED         = cfg#LED1
-
-    { I2C configuration }
-    SCL_PIN     = 28
-    SDA_PIN     = 29
-    I2C_FREQ    = 100_000                       ' 100_000 max
 ' --
 
 OBJ
 
-    cfg:  "core.con.boardcfg.flip"
+    cfg:  "boardcfg.flip"
     ser:  "com.serial.terminal.ansi"
     time: "time"
-    iaq:  "sensor.particle.pmsa003i"
+    iaq:  "sensor.particle.pmsa003i" | SCL=28, SDA=29, I2C_FREQ=100_000
 
 PUB main{}
 
@@ -38,7 +32,7 @@ PUB main{}
 
     repeat
         iaq.measure{}
-        ser.position(0, 3)
+        ser.pos_xy(0, 3)
 
         { unicode UTF-8 output (provides 'mu' and 'cubed' characters) }
         ser.printf1(@"PM1.0: %5.5d\302\265g/m\302\263\n\r", iaq.pm1_0{})
@@ -50,25 +44,23 @@ PUB main{}
 '        ser.printf1(@"PM2.5: %5.5dug/m^3\n\r", iaq.pm2_5{})
 '        ser.printf1(@"PM10: %5.5dug/m^3\n\r", iaq.pm10{})
 
-    repeat
-
 PUB setup{}
 
     ser.start(SER_BAUD)
     time.msleep(20)
     ser.clear{}
 
-    ser.strln(string("Serial terminal started"))
+    ser.strln(@"Serial terminal started")
 
-    if (iaq.startx(SCL_PIN, SDA_PIN, I2C_FREQ))
-        ser.strln(string("PMSA003i driver started"))
+    if ( iaq.start() )
+        ser.strln(@"PMSA003i driver started")
     else
-        ser.strln(string("PMSA003i driver failed to start - halting"))
+        ser.strln(@"PMSA003i driver failed to start - halting")
         repeat
 
 DAT
 {
-Copyright 2022 Jesse Burt
+Copyright 2023 Jesse Burt
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 associated documentation files (the "Software"), to deal in the Software without restriction,
