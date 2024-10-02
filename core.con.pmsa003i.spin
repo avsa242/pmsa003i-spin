@@ -1,13 +1,12 @@
 {
-    --------------------------------------------
-    Filename: core.con.pmsa003i.spin
-    Author: Jesse Burt
-    Description: PMSA0031-specific constants
-    Copyright (c) 2022
-    Started Aug 29, 2022
-    Updated Aug 29, 2022
-    See end of file for terms of use.
-    --------------------------------------------
+----------------------------------------------------------------------------------------------------
+    Filename:       core.con.pmsa003i.spin
+    Description:    PMSA0031-specific constants
+    Author:         Jesse Burt
+    Started:        Aug 29, 2022
+    Updated:        Oct 2, 2024
+    Copyright (c) 2024 - See end of file for terms of use.
+----------------------------------------------------------------------------------------------------
 }
 
 CON
@@ -61,12 +60,14 @@ CON
     CKSUM_MSB       = $1e
     CKSUM_LSB       = $1f
 
-PUB null{}
+
+PUB null()
 ' This is not a top-level object
+
 
 DAT
 {
-Copyright 2022 Jesse Burt
+Copyright 2024 Jesse Burt
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 associated documentation files (the "Software"), to deal in the Software without restriction,

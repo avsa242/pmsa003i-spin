@@ -1,51 +1,56 @@
 {
-    --------------------------------------------
-    Filename: sensor.particle.pmsa003i.spin2
-    Author: Jesse Burt
-    Description: Driver for the PLANTOWER PMSA0031
-        particle concentration sensor (P2 version)
-    Copyright (c) 2023
-    Started Aug 29, 2022
-    Updated Jul 15, 2023
-    See end of file for terms of use.
-    --------------------------------------------
+----------------------------------------------------------------------------------------------------
+    Filename:       sensor.particle.pmsa003i.spin2
+    Description:    Driver for the PLANTOWER PMSA0031 particle concentration sensor
+    Author:         Jesse Burt
+    Started:        Aug 29, 2022
+    Updated:        Oct 2, 2024
+    Copyright (c) 2024 - See end of file for terms of use.
+----------------------------------------------------------------------------------------------------
 }
 
 CON
 
+    { default I/O settings; these can be overridden in the parent object }
+    SCL         = 0
+    SDA         = 1
+    I2C_FREQ    = 100_000                       ' max: 100_000
+    I2C_ADDR    = 0
+
+
     SLAVE_WR    = core.SLAVE_ADDR
     SLAVE_RD    = core.SLAVE_ADDR|1
-
-    DEF_SCL     = 0
-    DEF_SDA     = 1
-    DEF_HZ      = 100_000
-    DEF_ADDR    = 0
     I2C_MAX_FREQ= core.I2C_MAX_FREQ
 
-    { default I/O settings; these can be overridden in the parent object }
-    SCL         = DEF_SCL
-    SDA         = DEF_SDA
-    I2C_FREQ    = DEF_HZ
-    I2C_ADDR    = DEF_ADDR
 
 VAR
 
     byte _reg[32]
 
+
 OBJ
 
-    i2c : "com.i2c"                             ' I2C engine
-    core: "core.con.pmsa003i"                   ' HW-specific constants
+    i2c:    "com.i2c"                           ' I2C engine
+    core:   "core.con.pmsa003i"                 ' HW-specific constants
+
 
 PUB null()
 ' This is not a top-level object
+
 
 PUB start(): status
 ' Start using default I/O settings
     return startx(SCL, SDA, I2C_FREQ)
 
-PUB startx(SCL_PIN, SDA_PIN, I2C_HZ=DEF_HZ): status
-' Start using custom IO pins and I2C bus frequency
+
+PUB startx(SCL_PIN, SDA_PIN, I2C_HZ): status
+' Start the driver with custom I/O settings
+'   SCL_PIN:    I2C clock, 0..63
+'   SDA_PIN:    I2C data, 0..63
+'   I2C_HZ:     I2C clock speed (max official specification is 100_000 but is unenforced)
+'   Returns:
+'       cog ID+1 of I2C engine on success
+'       0 on failure
     if ( lookdown(SCL_PIN: 0..63) and lookdown(SDA_PIN: 0..63) )
         if ( status := i2c.init(SCL_PIN, SDA_PIN, I2C_HZ) )
             waitus(core.T_POR)                  ' wait for device startup
@@ -56,19 +61,23 @@ PUB startx(SCL_PIN, SDA_PIN, I2C_HZ=DEF_HZ): status
     ' Lastly - make sure you have at least one free core/cog
     return FALSE
 
+
 PUB stop()
 ' Stop the driver
     i2c.deinit()
     bytefill(@_reg, 0, 32)
 
+
 PUB defaults()
 ' Set factory defaults
+
 
 PUB present(): flag
 ' Flag indicating device is present
     i2c.start()
     flag := (i2c.write(SLAVE_WR) == i2c.ACK)
     i2c.stop()
+
 
 PUB measure(): status | sum, reg_nr
 ' Perform a measurement
@@ -86,34 +95,39 @@ PUB measure(): status | sum, reg_nr
             sum += _reg[reg_nr]                 ' perform checksum
     i2c.stop()
 
-    { compare calculated checksum to that received by the sensor }
-    ifnot (sum == (_reg[core.CKSUM_MSB] << 8 | _reg[core.CKSUM_LSB]))
+    { compare calculated checksum to that received from the sensor }
+    ifnot ( sum == (_reg[core.CKSUM_MSB] << 8 | _reg[core.CKSUM_LSB]) )
         status := -1                            ' checksum verification failed
         bytefill(@_reg, 0, 32)                  ' zero out data
+
 
 PUB pm1_0(): p
 ' Particulate matter concentration (1.0um and smaller)
 '   Returns: micro-grams per cubic meter
     return (_reg[core.PM1_0_STD_MSB] << 8) | _reg[core.PM1_0_STD_LSB]
 
+
 PUB pm2_5(): p
 ' Particulate matter concentration (2.5um and smaller)
 '   Returns: micro-grams per cubic meter
     return (_reg[core.PM2_5_STD_MSB] << 8) | _reg[core.PM2_5_STD_LSB]
+
 
 PUB pm10(): p
 ' Particulate matter concentration (10um and smaller)
 '   Returns: micro-grams per cubic meter
     return (_reg[core.PM10_STD_MSB] << 8) | _reg[core.PM10_STD_LSB]
 
+
 PUB version(): ver
 ' Sensor version
 '   NOTE: measure() must be called at least once prior to calling this method
     return _reg[core.VERSION]
 
+
 DAT
 {
-Copyright 2023 Jesse Burt
+Copyright 2024 Jesse Burt
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 associated documentation files (the "Software"), to deal in the Software without restriction,
