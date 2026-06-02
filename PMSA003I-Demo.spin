@@ -4,8 +4,8 @@
     Description:    Demo of the PMSA003I driver
     Author:         Jesse Burt
     Started:        Aug 29, 2022
-    Updated:        Oct 2, 2024
-    Copyright (c) 2024 - See end of file for terms of use.
+    Updated:        Jun 2, 2026
+    Copyright (c) 2026 - See end of file for terms of use.
 ----------------------------------------------------------------------------------------------------
 }
 
@@ -31,14 +31,14 @@ PUB main()
         ser.pos_xy(0, 3)
 
         { unicode UTF-8 output (provides 'mu' and 'cubed' characters) }
-        ser.printf1(@"PM1.0: %5.5d\302\265g/m\302\263\n\r", iaq.pm1_0())
-        ser.printf1(@"PM2.5: %5.5d\302\265g/m\302\263\n\r", iaq.pm2_5())
-        ser.printf1(@"PM10: %5.5d\302\265g/m\302\263\n\r", iaq.pm10())
+        ser.printf(@"PM1.0: %5.5d\302\265g/m\302\263\n\r", iaq.pm1_0())
+        ser.printf(@"PM2.5: %5.5d\302\265g/m\302\263\n\r", iaq.pm2_5())
+        ser.printf(@"PM10: %5.5d\302\265g/m\302\263\n\r", iaq.pm10())
 
         { non-unicode output }
-'        ser.printf1(@"PM1.0: %5.5dug/m^3\n\r", iaq.pm1_0())
-'        ser.printf1(@"PM2.5: %5.5dug/m^3\n\r", iaq.pm2_5())
-'        ser.printf1(@"PM10: %5.5dug/m^3\n\r", iaq.pm10())
+'        ser.printf(@"PM1.0: %5.5dug/m^3\n\r", iaq.pm1_0())
+'        ser.printf(@"PM2.5: %5.5dug/m^3\n\r", iaq.pm2_5())
+'        ser.printf(@"PM10: %5.5dug/m^3\n\r", iaq.pm10())
 
 PUB setup()
 
@@ -56,7 +56,7 @@ PUB setup()
 
 DAT
 {
-Copyright 2024 Jesse Burt
+Copyright 2026 Jesse Burt
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 associated documentation files (the "Software"), to deal in the Software without restriction,
